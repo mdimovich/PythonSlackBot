@@ -24,11 +24,28 @@ def handle_command(command, channel):
     # Function for adding. Not sure how to implement yet.
     if command == "do add":
         slack_client.api_call("chat.postMessage", channel=channel, text="What would you like to add? :tada:", as_user=True)
-        slack_client.api_call()
+        if command == "5+4":
+            slack_client.api_call("chat.postMessage", channel=channel, text="The sum is: " + str(5+4))
     if command == "do list users":
-        parsed_users = json.loads("users.list")
+        users = slack_client.api_call("users.list")
+        userList = []
+        if users.get('ok'):
+            members = users.get('members')
+            for user in range(0, len(members)):
+                slack_client.api_call("chat.postMessage", channel=channel, text=members[user].get('name'))
+                userList.append(members[user].get('name'))
+                print (userList)
+    if command == "do list names":
+        users = slack_client.api_call("users.list")
+        nameList = []
+        if users.get('ok'):
+            members = users.get('members')
+            for user in range(0, len(members)):
+                slack_client.api_call("chat.postMessage", channel=channel, text=members[user].get('real_name'))
+                nameList.append(members[user].get('real_name'))
+                print(nameList)
        # print(parsed_users)
-        slack_client.api_call("chat.postMessage", channel=channel, text="Some text testing 1,2")
+       # slack_client.api_call("chat.postMessage", channel=channel, text="Some text testing 1,2")
     # Sends a thumbs up emoji message
     if command == "do thumbs up":
         slack_client.api_call("reactions.add", channel=channel, name="thumbsup", timestamp="1234567890.123456")
